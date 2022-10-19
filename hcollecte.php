@@ -9,9 +9,19 @@ $dept = $stmt->fetchAll();
 
 $bdd = new PDO('mysql:host=localhost;dbname=minddevel;', 'root', '');
 $sql = $bdd->query("SELECT * FROM statistique INNER JOIN cec ON statistique.code=cec.code where true");
-if(isset($_GET['search'])){
-    $recherche = htmlspecialchars($_GET['search']);
-    $sql = $bdd->query('select * from statistique where nom like"%'.$recherche.'%" or prenom like"%'.$recherche.'%" or username like "%'.$recherche.'%"');
+if(isset($_GET['region'])){
+    $region = htmlspecialchars($_GET['region']);
+    $sql = $bdd->query('select * from statistique where code like"%'.$region.'%"');
+}
+if(isset($_GET['etat'])){
+    $etat = htmlspecialchars($_GET['etat']);
+    $sql = $bdd->query("SELECT * FROM statistique WHERE fonctionnel ='$etat'");
+}
+
+if(isset($_GET['date']) && ($_GET['date1']) ){
+    $date = htmlspecialchars($_GET['date']);
+    $date1 = htmlspecialchars($_GET['date1']);
+    $sql = $bdd->query("SELECT * FROM statistique WHERE datecreation BETWEEN '$date' AND '$date1'");
 }
 
 ?>
@@ -156,7 +166,32 @@ if(isset($_GET['search'])){
                                 <option value="<?= $depart['code_dept'] ?>"><?= $depart['FR'] ?></option>
                             <?php }?>
                         </select>
-                        <input type="submit" value="Rechercher">
+                        <button type="submit">
+                        <img src="img/right-arrow.png" width="20px" height="20px" title="Rechercher">
+                    </button>
+                        
+                    </form>
+
+                    <form action="" method="get">
+                       <label for="">De:</label>
+                        <input type="date" name="date" id="date">
+                        <label for="">A:</label>
+                        <input type="date" name="date1" id="date1">
+                        <button type="submit">
+                            <img src="img/right-arrow.png" width="20px" height="20px" title="Rechercher">
+                        </button>
+                        
+                    </form>
+                    <form action="" method="get">
+                       <select name="etat" id="etat">
+                            <option value disable selected>Etat du centre</option>
+                            <option value="Fonctionnel">Fonctionnel</option>
+                            <option value="Non Fonctionnel">Non Fonctionnel</option>
+                       </select>
+                       <button type="submit">
+                            <img src="img/right-arrow.png" width="20px" height="20px" title="Rechercher">
+                        </button>
+                        
                     </form>
                     <div>
                     <button onclick="printPage()">
