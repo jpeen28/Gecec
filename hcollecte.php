@@ -1,13 +1,21 @@
 <?php
 require "dbconnexion.php";
 require "session.php";
+$stmt = $pdo->query("SELECT * FROM region");
+$regions = $stmt->fetchAll();
+
+$stmt = $pdo->query("SELECT * FROM departements");
+$dept = $stmt->fetchAll();
+
 $bdd = new PDO('mysql:host=localhost;dbname=minddevel;', 'root', '');
 $sql = $bdd->query("SELECT * FROM statistique INNER JOIN cec ON statistique.code=cec.code where true");
 if(isset($_GET['search'])){
     $recherche = htmlspecialchars($_GET['search']);
     $sql = $bdd->query('select * from statistique where nom like"%'.$recherche.'%" or prenom like"%'.$recherche.'%" or username like "%'.$recherche.'%"');
 }
+
 ?>
+
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -135,10 +143,24 @@ if(isset($_GET['search'])){
         <div class="container hcollecte">
             <div class="card mt-5 tab" id="print" >
                 <div class="card-header print">
-                    <h2 class="new-user-title">Historiques des collectes</h2>
+                    <form action="" method="get">
+                        <select name="region" id="region">
+                            <option value disable selected>Selectionner la region</option>
+                            <?php foreach ($regions as $region) { ?>
+                                <option value="<?= $region['code_region'] ?>"><?= $region['FR'] ?></option>
+                            <?php }?>
+                        </select>
+                        <select name="departement" id="departement">
+                            <option value disable selected>Selectionner un departement</option>
+                            <?php foreach ($dept as $depart) { ?>
+                                <option value="<?= $depart['code_dept'] ?>"><?= $depart['FR'] ?></option>
+                            <?php }?>
+                        </select>
+                        <input type="submit" value="Rechercher">
+                    </form>
                     <div>
                     <button onclick="printPage()">
-                        <img src="img/printer.png" width="30px" height="30px">
+                        <img src="img/printer.png" width="30px" height="30px" title="imprimer">
                     </button>
                     </div>
                 </div>
